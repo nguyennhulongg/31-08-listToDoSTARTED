@@ -2,29 +2,37 @@ const addWorks = document.querySelector('.texts');
 const textToDo = document.getElementById('something');  
 const addSomethingToDo = document.getElementById('add');
 const listToDo = document.querySelector('.list-to-do');
-const toDoDatas = [];
+const dataStorage = localStorage.getItem('data');
+const toDoDatas = dataStorage ? JSON.parse(dataStorage) : [];
 
 function getSomeThingToDo(e) {
     const inputToDo = textToDo.value;
+    if (!inputToDo) return;
     e.preventDefault();
     const saveSomethingToDo = {
-        toDoData: inputToDo
+        toDoData: inputToDo,
+        id: Math.floor(Math.random() * 1000)
     };
+
     toDoDatas.push(saveSomethingToDo);
-    showListToDo(toDoDatas, listToDo);
     addWorks.reset()
+    
+    localStorage.setItem('data', JSON.stringify(toDoDatas));
+    showListToDo();
 }
 
-function showListToDo(items = [], showDatas) {
-    showDatas.innerHTML = items.map((item) => {
+function showListToDo() {
+    listToDo.innerHTML = toDoDatas.map((data) => {
         return`
         <li>
-            <label>${item.toDoData}</label>
-            <i class="fa-solid fa-trash" style="float:right;"></i>
+            <label>${data.toDoData}</label>
+            <i class="fa-solid fa-trash" style="float:right;" onclick="abc()" ></i>
         </li>
         `
     }).join('')
 }
+
+showListToDo();
 
 addSomethingToDo.addEventListener('click', getSomeThingToDo);
 
